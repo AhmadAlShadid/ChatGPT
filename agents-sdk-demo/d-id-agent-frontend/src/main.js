@@ -159,19 +159,36 @@ function speak() {
 function chat() {
     let val = textArea.value
     if (val !== "") {
-        let chat = agentManager.chat(val)
-        console.log("agentManager.chat()")
         connectionLabel.innerHTML = "Thinking.."
         textArea.value = ""
+        fetch('/api/aa-chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: val })
+        })
+        .then(r => r.json())
+        .then(data => {
+            let reply = data.reply || ''
+            agentManager.speak({ type: 'text', input: reply })
+        })
+        .catch(err => console.error(err))
     }
 }
 
 export function speakchat(val) {
     if (val !== "") {
-        let chat = agentManager.chat(val)
-        console.log("agentManager.chat()")
         connectionLabel.innerHTML = "Thinking.."
-        textArea.value = ""
+        fetch('/api/aa-chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: val })
+        })
+        .then(r => r.json())
+        .then(data => {
+            let reply = data.reply || ''
+            agentManager.speak({ type: 'text', input: reply })
+        })
+        .catch(err => console.error(err))
     }
 }
 // agentManager.rate() -> Rating the Agent's answers - for future Agents Analytics and Insights feature
